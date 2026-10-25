@@ -1,0 +1,461 @@
+/* =========================================
+   1. BASE (applies to the whole page)
+   ========================================= */
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 70px;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: beige;
+    font-family: "Poppins", sans-serif;
+    width: 100%;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+
+/* =========================================
+   2. HEADER + NAVIGATION
+   ========================================= */
+header {
+    position: fixed;          /* stays at the top while scrolling */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;             /* stays above the video and sections */
+    box-sizing: border-box;
+    background: rgba(59, 47, 30, 0.75);   /* see-through dark brown */
+    backdrop-filter: blur(6px);
+    padding: 16px 9%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;          /* lets items wrap when zooming */
+    gap: 1rem;
+}
+
+.logo a {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: white;
+    text-decoration: none;
+}
+
+.main-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 25px;
+}
+
+.main-nav li {
+    display: inline-block;
+}
+
+.main-nav li a {
+    color: white;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.logo a:hover,
+.main-nav li a:hover {
+    color: #C9A84C;           /* gold on hover */
+}
+
+
+/* =========================================
+   3. SHARED SECTION STYLE (every section)
+   ========================================= */
+section {
+    padding: 100px 9%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================================
+   3.5 HERO BACKGROUND (only inside #home)
+   ========================================= */
+#bg-video {
+    position: absolute;      /* was fixed: now stays inside #home */
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transform: scale(1.1);
+    transition: transform 0.6s ease-out;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0) 60%);
+    z-index: 1;
+}
+
+/* =========================================
+   4. HOME / HERO
+   ========================================= */
+#home {
+    position: relative;
+    justify-content: flex-end;     /* push content toward the bottom */
+    align-items: flex-start;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* --- headline + button --- */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    margin-left: 44%;              /* pushes it right of center, like your reference */
+    padding-bottom: 12vh;
+    text-align: left;
+}
+
+#home h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 1.02;
+    color: white;
+    margin: 0 0 32px;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+
+.pill-btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 999px;          /* fully rounded ends = pill shape */
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(4px);
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: background 0.25s, border-color 0.25s;
+}
+
+.pill-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: white;
+}
+
+/* --- small card, bottom-left --- */
+.feature-card {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    z-index: 2;
+    width: 150px;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    background: rgba(10, 25, 15, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    transition: transform 0.25s;
+}
+
+.feature-card:hover { transform: translateY(-4px); }
+
+.feature-card strong { letter-spacing: 1px; font-size: 0.85rem; }
+.fc-small { font-size: 0.65rem; opacity: 0.7; }
+
+/* --- round button, bottom-right --- */
+.scroll-btn {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+    transition: background 0.25s;
+}
+
+.scroll-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* --- phones: center everything --- */
+@media (max-width: 700px) {
+    .hero-content { margin-left: 0; padding: 0 24px 22vh; text-align: center; }
+    .feature-card { display: none; }
+}
+
+
+/* =========================================
+   5. HERO BUTTONS (.btn links)
+   ========================================= */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #C9A84C;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    color: white;
+    border: 2px solid #C9A84C;
+}
+
+
+/* =========================================
+   6. ABOUT SECTION
+   ========================================= */
+#about {
+    background-color: beige;
+    justify-content: center;
+    align-items: center;
+}
+
+#about h2,
+#about p {
+    width: 100%;
+    max-width: 720px;   /* the text stays narrow, the section goes full width */
+}
+
+/* small gold line under the title */
+#about h2::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #C9A84C;
+    margin: 12px 0 0;
+    border-radius: 2px;
+}
+
+#about p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4a3f2f;
+    margin: 20px 0;
+}
+
+/* highlighted line: "you belong, and you are remembered" */
+#about em {
+    color: #8a6d1f;
+    font-weight: bold;
+}
+
+/* last paragraph stands out like a call to action */
+#about p:last-of-type {
+    background: white;
+    border-left: 4px solid #C9A84C;
+    padding: 16px 20px;
+    border-radius: 8px;
+    text-align: left;
+    font-style: italic;
+}
+
+
+/* =========================================
+   7. SERVICES / TEMPLATES SECTION
+   ========================================= */
+#services {
+    background-color: bisque;
+    align-items: center;
+    justify-content: flex-start;   /* content starts at the top */
+    min-height: auto;              /* section is only as tall as its content */
+    padding: 70px 9% 80px;         /* top, sides, bottom */
+    text-align: center;
+}
+
+#services h2 {
+    color: #3b2f1e;
+    margin: 0 0 8px;               /* removes the default top margin */
+}
+
+.section-intro {
+    max-width: 480px;
+    color: #4a3f2f;
+    line-height: 1.7;
+    margin: 0 0 40px;
+}
+
+/* the row of cards */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* one card */
+.card {
+    display: block;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 28px 20px;
+    text-decoration: none;
+    color: #3b2f1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    border-color: #C9A84C;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+    font-size: 2.5rem;
+}
+
+.card h3 {
+    margin: 12px 0 8px;
+}
+
+.card p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #6b5d48;
+}
+
+
+/* =========================================
+   8. CONTACT SECTION
+   ========================================= */
+#contact {
+    background-color: burlywood;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: auto;
+    padding: 70px 9% 40px;
+    text-align: center;
+}
+
+#contact h2 {
+    color: #3b2f1e;
+    margin: 0 0 8px;
+}
+
+.contact-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.contact-card {
+    display: block;
+    background: #fffaf0;
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-decoration: none;
+    color: #3b2f1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.25s, border-color 0.25s;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    border-color: #8a6d1f;
+}
+
+.contact-card h3 {
+    margin: 10px 0 6px;
+}
+
+.contact-card p {
+    margin: 0;
+    color: #6b5d48;
+    font-size: 0.95rem;
+}
+
+.footer-note {
+    margin-top: 50px;
+    font-size: 0.9rem;
+    color: #4a3f2f;
+}
+
+
+/* =========================================
+   9. PAGE BUTTONS (<button> tags)
+   ========================================= */
+button {
+    color: black;
+    background-color: aquamarine;
+    font-size: 20px;
+    margin-left: 80%;
+}
+
+button a {
+    text-decoration: none;
+    color: black;
+}
+
+button:hover {
+    background-color: rgb(221, 107, 221);
+}
+
+button a:hover {
+    color: white;
+}
+
+/* =========================================
+   GAP FIX (keep this LAST in the file)
+   ========================================= */
+html {
+    scroll-padding-top: 65px;   /* should equal your header's height */
+}
+
+#about, #services, #contact {
+    padding-top: 95px;          /* smaller space above each title */
+}
+
+/* =========================================
+   SCROLL REVEAL ANIMATION
+   ========================================= */
+.reveal {
+    opacity: 0;
+}
+
+.reveal.visible {
+    opacity: 1;
+    animation: revealUp 0.8s ease backwards;
+}
+
+@keyframes revealUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

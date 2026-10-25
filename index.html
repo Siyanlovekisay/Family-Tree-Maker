@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree Maker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="#home">🌿 Family Tree</a></div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Templates</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+    <section id="home">
+        <img id="bg-video" src="main_bg.jpg" alt="forest">
+         <div class="overlay"></div>
+        <!-- headline + button (low, right of center) -->
+        <div class="hero-content">
+            <h1>Family.<br>Roots.<br>Legacy.</h1>
+            <a class="pill-btn" href="tree.html">Start Your Family Tree</a>
+        </div>
+
+        <!-- small card, bottom-left -->
+        <a class="feature-card" href="#services">
+            <span class="fc-small">Popular this week</span>
+            <strong>BASIC FAMILY</strong>
+            <span class="fc-small">3 generations · template</span>
+        </a>
+
+        <!-- round button, bottom-right -->
+        <a class="scroll-btn" href="#about" aria-label="Scroll down">↓</a>
+    </section>
+    <section id="about">
+        <h2>Why Family Trees Matter</h2>
+            <p>
+            Every family is a story that started long before us. Behind each name is
+            someone who worked, sacrificed, laughed, and loved so that the next
+            generation could have a better life. But when no one writes those names
+            down, they slowly fade to everyone's memory, and one day nobody remembers who they were.
+            </p>
+            <p>
+            A family tree keeps them from being forgotten. It tells your children
+            where they come from, shows you who you carry in your blood and your
+            habits, and gives every member, from the oldest lola to the youngest baby,
+            a place that says: <em>you belong, and you are remembered.</em>
+            </p>
+            <p>
+            Start with one name today. Add the people who raised you. Ask your
+            grandparents for their stories while they can still tell them.
+            </p>
+    </section>
+    <section id="services">
+  <h2>Templates</h2>
+  <p class="section-intro">
+    Not sure where to begin? Pick a ready-made layout and fill in your own names.
+  </p>
+
+  <div class="cards">
+    <a class="card" href="tree.html?template=basic">
+      <span class="card-icon">👨‍👩‍👧</span>
+      <h3>Basic Family</h3>
+      <p>You, your parents, and your siblings.</p>
+    </a>
+
+    <a class="card" href="tree.html?template=grandparents">
+      <span class="card-icon">👵</span>
+      <h3>With Grandparents</h3>
+      <p>Three generations, from lolo and lola down to you.</p>
+    </a>
+
+    <a class="card" href="tree.html?template=extended">
+      <span class="card-icon">🌳</span>
+      <h3>Extended Family</h3>
+      <p>Add uncles, aunts, and cousins to the tree.</p>
+    </a>
+
+    <a class="card" href="tree.html">
+      <span class="card-icon">✏️</span>
+      <h3>Blank Canvas</h3>
+      <p>Start empty and build it your own way.</p>
+    </a>
+  </div>
+    </section>
+    <section id="contact">
+        <h2>Contact</h2>
+        <p class="section-intro">
+            Have a question, an idea, or a story to share? Reach out anytime.
+        </p>
+
+        <div class="contact-cards">
+            <a class="contact-card" href="mailto:your-email@example.com">
+            <span class="card-icon">✉️</span>
+            <h3>Email</h3>
+            <p>your-email@example.com</p>
+            </a>
+
+            <a class="contact-card" href="https://facebook.com/your-page" target="_blank">
+            <span class="card-icon">💬</span>
+            <h3>Facebook</h3>
+            <p>Send us a message</p>
+            </a>
+
+            <a class="contact-card" href="https://github.com/your-username" target="_blank">
+            <span class="card-icon">💻</span>
+            <h3>GitHub</h3>
+            <p>See the project code</p>
+            </a>
+        </div>
+
+        <p class="footer-note">Made with 🌿 to keep every family remembered.</p>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>

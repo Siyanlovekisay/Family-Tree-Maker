@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Family Tree Workstation</title>
+    <link rel="stylesheet" href="tree.css">
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a class="back-link" href="index.html">← Home</a>
+        <input
+            type="text"
+            id="tree-title"
+            class="title-pill"
+            placeholder="✏️ Name your family tree"
+            maxlength="40">
+    </div>
+
+    <div class="workspace" id="workspace">
+
+        <!-- LEFT SIDEBAR (tools) -->
+        <aside class="sidebar" id="sidebar">
+            <button class="tool-btn" id="btn-add">
+                <span class="tool-icon">＋</span>
+                <span class="tool-label">Add</span>
+            </button>
+            <button class="tool-btn" id="btn-select">
+                <span class="tool-icon">⬚</span>
+                <span class="tool-label">Select</span>
+            </button>
+            <button class="tool-btn" id="btn-undo">
+                <span class="tool-icon">↩</span>
+                <span class="tool-label">Undo</span>
+            </button>
+            <button class="tool-btn" id="btn-theme">
+                <span class="tool-icon">🎨</span>
+                <span class="tool-label">Theme</span>
+            </button>
+            <button class="tool-btn" id="btn-save">
+                <span class="tool-icon">💾</span>
+                <span class="tool-label">Save</span>
+            </button>
+        </aside>
+
+        <!-- HIDE / SHOW BUTTON -->
+        <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Hide tools">‹</button>
+
+        <!-- CANVAS -->
+        <main id="canvas"><div id="stage"></div></main>
+
+    </div>
+        <!-- ADD PERSON POPUP -->
+    <div class="modal-overlay" id="modal">
+        <form class="modal-box" id="person-form">
+            <h2 id="modal-title">Add Person</h2>
+
+            <!-- PHOTO (optional) -->
+            <label class="photo-row">
+                <div class="photo-circle">
+                    <img id="photo-preview" alt="">
+                    <span id="photo-placeholder">📷</span>
+                </div>
+                <span class="photo-text">
+                    <strong>Add a photo</strong> (optional)<br>
+                    <small>Click here to choose a picture</small>
+                </span>
+                <input type="file" id="person-photo" accept="image/*" style="display:none">
+            </label>
+
+            <label>Full Name
+                <input type="text" id="person-name" maxlength="30" required>
+            </label>
+
+            <!-- BIRTHDAY -->
+            <label>Birthday</label>
+            <div class="date-row">
+                <select id="person-month">
+                    <option value="">Month</option>
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+                <input type="number" id="person-day" placeholder="Day" min="1" max="31">
+                <input type="number" id="person-year" placeholder="Year" min="1000" max="2100">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" id="modal-cancel" class="btn-cancel">Cancel</button>
+                <button type="submit" class="btn-ok" id="modal-submit">Add to Tree</button>
+            </div>
+        </form>
+    </div>
+
+<!-- small message at the bottom -->
+    <div id="toast"></div>
+    
+<!-- TAP MENU -->
+<div class="node-menu" id="node-menu">
+    <div id="menu-main">
+        <button data-action="details">👁 View details</button>
+        <button data-action="relationship">🔗 Add relationship</button>
+        <button data-action="edit">✏️ Edit</button>
+        <button data-action="remove" class="danger">🗑 Remove</button>
+    </div>
+    <div id="menu-relations" hidden>
+        <button data-action="back">← Back</button>
+        <button data-relation="partner">💑 Partner</button>
+        <button data-relation="child">👶 Child</button>
+        <button data-relation="parent">👪 Parent</button>
+        <button data-relation="sibling">🧑‍🤝‍🧑 Sibling</button>
+    </div>
+</div>
+
+<!-- DETAILS CARD -->
+<div class="modal-overlay" id="details">
+    <div class="modal-box details-box" id="details-box"></div>
+</div>
+
+<!-- THEME PICKER -->
+<div class="theme-panel" id="theme-panel"></div>
+
+<!-- SAVE PANEL -->
+<div class="theme-panel save-panel" id="save-panel"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="tree.js"></script>
+</body>
+</html>

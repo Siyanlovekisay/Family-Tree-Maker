@@ -1,0 +1,795 @@
+/* =========================================
+   1. BASE
+   ========================================= */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;     /* top bar on top, workspace below */
+    font-family: "Poppins", sans-serif;
+    background: beige;
+    overflow: hidden;
+}
+
+
+/* =========================================
+   2. TOP BAR
+   ========================================= */
+.topbar {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: #3b2f1e;
+    color: white;
+}
+
+.back-link {
+    color: #e8c96a;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.back-link:hover {
+    color: white;
+}
+
+.title-pill {
+    width: 240px;
+    padding: 8px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-family: inherit;
+    font-size: 0.95rem;
+    text-align: center;
+    outline: none;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.title-pill::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.title-pill:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.title-pill:focus {
+    border-color: #C9A84C;
+    background: rgba(255, 255, 255, 0.22);
+}
+
+
+/* =========================================
+   3. WORKSPACE (sidebar + canvas side by side)
+   ========================================= */
+.workspace {
+    --sidebar-w: 84px;          /* one number controls the sidebar width */
+    position: relative;
+    flex: 1;
+    display: flex;              /* THIS is what puts them side by side */
+    flex-direction: row;
+    min-height: 0;
+}
+
+/* when the user hides the sidebar */
+.workspace.collapsed {
+    --sidebar-w: 0px;
+}
+
+
+/* =========================================
+   4. LEFT SIDEBAR
+   ========================================= */
+.sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 0;
+    background: #4a3c27;
+    transition: width 0.3s ease;
+}
+
+.workspace.collapsed .sidebar {
+    visibility: hidden;         /* also stops keyboard focus on hidden buttons */
+    transition: width 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.tool-btn {
+    width: 68px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: #f3ead8;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.tool-btn:hover {
+    background: rgba(201, 168, 76, 0.2);
+    border-color: #C9A84C;
+}
+
+.tool-icon  { font-size: 1.4rem; }
+.tool-label { font-size: 0.7rem; }
+
+
+/* =========================================
+   5. HIDE / SHOW BUTTON
+   ========================================= */
+.sidebar-toggle {
+    position: absolute;
+    top: 16px;
+    left: var(--sidebar-w);     /* follows the sidebar edge */
+    z-index: 5;
+    width: 24px;
+    height: 48px;
+    border: none;
+    border-radius: 0 10px 10px 0;
+    background: #4a3c27;
+    color: #e8c96a;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: left 0.3s ease, background 0.2s;
+}
+
+.sidebar-toggle:hover {
+    background: #5e4b30;
+}
+
+
+/* =========================================
+   6. CANVAS
+   ========================================= */
+#canvas {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--canvas-bg, #F7F0E6);
+    background-image: radial-gradient(var(--dot, #d8c9a8) 1px, transparent 1px);
+    background-size: 24px 24px;
+    transition: background-color 0.3s;
+    touch-action: none;   /* lets pinch and drag reach our code, not the browser */
+    cursor: grab;
+}
+
+
+/* =========================================
+   7. PHONES
+   ========================================= */
+@media (max-width: 600px) {
+    .title-pill { width: 160px; }
+
+    .workspace {
+        --sidebar-w: 100%;
+        flex-direction: column-reverse;   /* tools move to the bottom */
+    }
+
+    .sidebar {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 8px;
+    }
+
+    .tool-btn { width: auto; padding: 8px 10px; }
+    .sidebar-toggle { display: none; }
+}
+
+/* =========================================
+   8. STAGE + PEOPLE BOXES
+   ========================================= */
+#stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: 0 0;      /* zoom from the top-left corner */
+}
+
+.node {
+    position: absolute;
+    min-width: 120px;
+    padding: 12px 16px;
+    background: var(--node-bg, #ffffff);
+    color: var(--node-text, #3b2f1e);
+    border: 2px solid var(--node-border, #C9A84C);
+    border-radius: 12px;
+    text-align: center;
+    cursor: grab;
+    user-select: none;          /* stops text highlighting while dragging */
+    touch-action: none;         /* lets touch screens drag it too */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.node:active { cursor: grabbing; }
+.node-name { font-weight: 600; }
+.node-year { font-size: 0.8rem; opacity: 0.7; margin-top: 2px; }
+
+
+/* =========================================
+   9. ADD PERSON POPUP
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;              /* hidden until opened */
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+    width: min(360px, 90vw);
+    padding: 24px;
+    background: #fffaf0;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.modal-box h2 { margin: 0 0 16px; color: #3b2f1e; }
+
+.modal-box label {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+    color: #6b5d48;
+}
+
+.modal-box input {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px 12px;
+    border: 1px solid #d8c9a8;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.modal-box input:focus { outline: 2px solid #C9A84C; }
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.btn-cancel, .btn-ok {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.btn-cancel { background: #e9e0cf; color: #3b2f1e; }
+.btn-ok     { background: #C9A84C; color: white; }
+.btn-ok:hover { background: #b8943a; }
+
+
+/* =========================================
+   10. TOAST MESSAGE
+   ========================================= */
+#toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    padding: 10px 20px;
+    background: #3b2f1e;
+    color: white;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 60;
+}
+
+#toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* =========================================
+   11. PERSON DETAILS (popup + node)
+   ========================================= */
+.modal-box {
+    max-height: 90vh;
+    overflow-y: auto;           /* scrolls on short screens */
+}
+
+.modal-box select {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d8c9a8;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    background: white;
+}
+
+.date-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.2fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.date-row input { margin-top: 0; }
+
+/* photo picker */
+.photo-row {
+    display: flex !important;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    margin-bottom: 16px;
+    border: 2px dashed #d8c9a8;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.photo-row:hover { border-color: #C9A84C; }
+
+.photo-circle {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #efe5d0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
+
+.photo-circle img {
+    display: none;              /* shown by JavaScript once a photo is chosen */
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-text { font-size: 0.85rem; color: #6b5d48; line-height: 1.4; }
+
+/* the box on the canvas */
+.node {
+    min-width: 140px;
+}
+
+.node-photo {
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--node-border, #C9A84C);
+    pointer-events: none;       /* so dragging the box still works */
+}
+
+/* the circle with a letter, for people with no photo */
+.node-initial {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--node-bg, #fff);
+    background: var(--node-border, #C9A84C);
+}
+
+/* =========================================
+   12. TAP MENU + DETAILS CARD
+   ========================================= */
+[hidden] { display: none !important; }
+
+.node-menu {
+    position: fixed;            /* placed with screen coordinates */
+    z-index: 40;
+    display: none;
+    min-width: 190px;
+    padding: 6px;
+    background: #fffaf0;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.node-menu.open { display: block; }
+
+.node-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: #3b2f1e;
+    font-family: inherit;
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.node-menu button:hover { background: rgba(201, 168, 76, 0.25); }
+.node-menu button.danger { color: #b3382c; }
+
+.details-box { text-align: center; }
+
+.details-photo {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #C9A84C;
+}
+
+.details-initial {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 600;
+    color: white;
+    background: #C9A84C;
+}
+
+.details-box h2 { margin: 0 0 6px; }
+.details-line { color: #6b5d48; margin: 4px 0; }
+
+/* =========================================
+   13. CONNECTION LINES (SVG)
+   ========================================= */
+.tree-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: visible;          /* lines can go anywhere on the stage */
+    pointer-events: none;       /* they never block clicks or dragging */
+}
+
+.tree-lines .line {
+    fill: none;
+    stroke: var(--node-border, #C9A84C);   /* follows the theme */
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.tree-lines .partner-line { stroke-dasharray: 6 6; }
+
+.tree-lines .couple-dot { fill: var(--node-border, #C9A84C); }
+
+/* =========================================
+   14. PROFILE PANEL + FOLDERS
+   ========================================= */
+.modal-box.details-box {
+    width: min(560px, 94vw);
+    text-align: left;
+}
+
+.profile-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.profile-head .details-photo,
+.profile-head .details-initial {
+    width: 92px;
+    height: 92px;
+    margin: 0;
+    flex-shrink: 0;
+    font-size: 2.4rem;
+}
+
+.profile-head h2 { margin: 0 0 4px; }
+
+.folders-title {
+    margin: 0 0 10px;
+    color: #3b2f1e;
+    font-size: 1rem;
+}
+
+/* folder tiles */
+.folder-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.folder-tile {
+    padding: 18px 12px;
+    border: 2px solid #e4d7b8;
+    border-radius: 14px;
+    background: white;
+    color: #3b2f1e;
+    font-family: inherit;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.folder-tile:hover {
+    border-color: #C9A84C;
+    transform: translateY(-3px);
+}
+
+.folder-icon  { display: block; font-size: 2.2rem; }
+.folder-name  { display: block; margin-top: 6px; font-weight: 600; }
+.folder-count { display: block; margin-top: 2px; font-size: 0.8rem; color: #6b5d48; }
+
+/* inside a folder */
+.back-btn {
+    margin-bottom: 10px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #8a6d1f;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.folder-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.folder-head h2 { margin: 0; }
+
+.empty-note {
+    padding: 20px 0;
+    text-align: center;
+    color: #6b5d48;
+}
+
+/* pictures */
+.pic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+}
+
+.pic-item { position: relative; }
+
+.pic-item img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: zoom-in;
+}
+
+.pic-del {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    cursor: pointer;
+}
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    cursor: zoom-out;
+}
+
+.lightbox img {
+    max-width: 92vw;
+    max-height: 90vh;
+    border-radius: 8px;
+}
+
+/* stories */
+.story-input {
+    display: block;
+    width: 100%;
+    min-height: 90px;
+    padding: 10px 12px;
+    border: 1px solid #d8c9a8;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.story-item {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: white;
+    border-left: 4px solid #C9A84C;
+    border-radius: 8px;
+}
+
+.story-date { margin-bottom: 4px; font-size: 0.75rem; color: #6b5d48; }
+.story-text { white-space: pre-wrap; color: #3b2f1e; line-height: 1.6; }
+
+.story-del {
+    margin-top: 6px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #b3382c;
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+/* =========================================
+   15. SELECT TOOL
+   ========================================= */
+.tool-btn.active {
+    background: rgba(201, 168, 76, 0.3);
+    border-color: #C9A84C;
+}
+
+#canvas.select-mode { cursor: crosshair; }
+
+.node.selected {
+    outline: 3px solid var(--node-border, #C9A84C);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(201, 168, 76, 0.25), 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* the box you draw while selecting */
+.marquee {
+    position: absolute;
+    z-index: 3;
+    border: 1.5px dashed #C9A84C;
+    background: rgba(201, 168, 76, 0.15);
+    pointer-events: none;     /* never blocks the mouse */
+}
+
+/* =========================================
+   16. THEME PANEL
+   ========================================= */
+.theme-panel {
+    position: fixed;
+    z-index: 45;
+    display: none;
+    width: 210px;
+    padding: 10px;
+    background: #fffaf0;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.theme-panel.open { display: block; }
+
+.theme-title {
+    padding: 4px 6px 8px;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #6b5d48;
+}
+
+.theme-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 4px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background: transparent;
+    color: #3b2f1e;
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.theme-option:hover { background: rgba(201, 168, 76, 0.18); }
+.theme-option.active { border-color: #C9A84C; background: rgba(201, 168, 76, 0.18); }
+
+/* little preview: the canvas color with a node on it */
+.theme-swatch {
+    width: 46px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.theme-chip {
+    width: 24px;
+    height: 14px;
+    border-radius: 4px;
+    border: 2px solid;
+}
+
+.storage-line {
+    margin-top: 18px;
+    font-size: 0.8rem;
+    text-align: center;
+    color: #6b5d48;
+}
+
+/* =========================================
+   17. SAVE PANEL
+   ========================================= */
+.save-panel { width: 280px; }
+
+.save-icon {
+    flex-shrink: 0;
+    width: 32px;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.save-text { text-align: left; }
+.save-title { display: block; font-weight: 600; }
+.save-sub { display: block; margin-top: 2px; font-size: 0.75rem; color: #6b5d48; }
+
+.save-meter {
+    margin-top: 8px;
+    padding: 8px 6px 2px;
+    border-top: 1px solid #e4d7b8;
+    font-size: 0.75rem;
+    color: #6b5d48;
+}
+
+.theme-option:disabled { opacity: 0.6; cursor: wait; }
+
+#canvas.panning { cursor: grabbing; }
