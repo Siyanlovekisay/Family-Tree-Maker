@@ -1,0 +1,9 @@
+# family backups: never upload these to a public repo
+*.zip
+
+# junk files that computers create
+.DS_Store
+Thumbs.db
+
+# editor settings
+.vscode/
